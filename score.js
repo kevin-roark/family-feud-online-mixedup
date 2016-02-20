@@ -20,7 +20,7 @@ function newSequencedSegment() {
   }
 
   // choose the duration of each clip in the segment
-  var segmentDuration = (Math.pow(Math.random(), 2) * (minimumDuration - 0.25)) + 0.25;
+  var segmentDuration = (Math.pow(Math.random(), 1.9) * (minimumDuration - 0.32)) + 0.32;
 
   // construct the ordered list of segments
   var segments = [];
