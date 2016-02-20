@@ -1,13 +1,25 @@
 
 var renderer = new frampton.WebRenderer({
   mediaConfig: mediaConfig,
-  timeToLoadVideo: 4000
+  timeToLoadVideo: 6000,
+  videoSourceMaker: function(filename) {
+    switch (filename[0]) {
+      case 'F':
+        return `http://family.feud.online/media/${filename}`;
+
+      case 'D':
+        return `http://answers.feud.online/media/${filename}`;
+
+      default:
+        return `media/${filename}`;
+    }
+  }
 });
 
-var firstSegment = newSequencedSegment();
-renderer.scheduleSegmentRender(firstSegment, 2000);
+var firstSegment = newSequencedSegment(0);
+renderer.scheduleSegmentRender(firstSegment, 4000);
 
-function newSequencedSegment() {
+function newSequencedSegment(segmentIndex) {
   var videos = frampton.util.shuffle(mediaConfig.videos);
 
   // choose the number of videos in the group
@@ -20,7 +32,8 @@ function newSequencedSegment() {
   }
 
   // choose the duration of each clip in the segment
-  var segmentDuration = (Math.pow(Math.random(), 1.9) * (minimumDuration - 0.32)) + 0.32;
+  var segmentDuration = (Math.pow(Math.random(), 2.1) * (minimumDuration - 0.35)) + 0.35;
+  console.log(`segment duration: ${segmentDuration}`);
 
   // construct the ordered list of segments
   var segments = [];
@@ -40,10 +53,15 @@ function newSequencedSegment() {
 
   var loopingSegment = frampton.finiteLoopingSegment(sequencedSegment, timesToLoopSegment, {
     onStart: () => {
-      // once it starts, schedule the next loop with a new shuffle
-      var newSegment = newSequencedSegment();
-      var offset = loopingSegment.msDuration();
-      renderer.scheduleSegmentRender(newSegment, offset);
+      // every fourth segment that starts, should schedule the next 4 segments to give vids time to load
+      if (segmentIndex % 4 === 0) {
+        var accumulatedOffset = 0;
+        for (var i = 1; i <= 4; i++) {
+          var newSegment = newSequencedSegment(segmentIndex + i);
+          accumulatedOffset += loopingSegment.msDuration();
+          renderer.scheduleSegmentRender(newSegment, accumulatedOffset);
+        }
+      }
     }
   });
 
