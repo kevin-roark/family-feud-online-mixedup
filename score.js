@@ -16,10 +16,30 @@ var renderer = new frampton.WebRenderer({
   }
 });
 
-var firstSegment = newSequencedSegment(0);
+var firstSegment = newContinuousSegment();
 renderer.scheduleSegmentRender(firstSegment, 4000);
 
-function newSequencedSegment(segmentIndex) {
+function newContinuousSegment() {
+  // I do this whole sequence of looped segments thing to allow scheduling
+  // of more videos at a time, to give them time to load, since this score eats through so many videos
+  var loopingSequencedSegments = [];
+  for (var i = 0 ; i < 5; i++) {
+    loopingSequencedSegments.push(newLoopingSegment());
+  }
+
+  var continousSegment = new frampton.SequencedSegment({
+    segments: loopingSequencedSegments,
+    onStart: () => {
+      var newSegment = newContinuousSegment();
+      var offset = continousSegment.msDuration();
+      renderer.scheduleSegmentRender(newSegment, offset);
+    }
+  });
+
+  return continousSegment;
+}
+
+function newLoopingSegment() {
   var videos = frampton.util.shuffle(mediaConfig.videos);
 
   // choose the number of videos in the group
@@ -44,26 +64,10 @@ function newSequencedSegment(segmentIndex) {
   }
 
   // create the sequence from the ordered list
-  var sequencedSegment = new frampton.SequencedSegment({
-    segments: segments
-  });
+  var sequencedSegment = new frampton.SequencedSegment({ segments: segments });
 
   // choose a number of times to loop sequence
   var timesToLoopSegment = frampton.util.choice([1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 5, 6]);
 
-  var loopingSegment = frampton.finiteLoopingSegment(sequencedSegment, timesToLoopSegment, {
-    onStart: () => {
-      // every fourth segment that starts, should schedule the next 4 segments to give vids time to load
-      if (segmentIndex % 4 === 0) {
-        var accumulatedOffset = 0;
-        for (var i = 1; i <= 4; i++) {
-          var newSegment = newSequencedSegment(segmentIndex + i);
-          accumulatedOffset += loopingSegment.msDuration();
-          renderer.scheduleSegmentRender(newSegment, accumulatedOffset);
-        }
-      }
-    }
-  });
-
-  return loopingSegment;
+  return frampton.finiteLoopingSegment(sequencedSegment, timesToLoopSegment);
 }
