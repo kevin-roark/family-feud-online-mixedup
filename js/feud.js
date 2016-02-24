@@ -2,7 +2,8 @@
 (function() {
   var backgroundImage = document.createElement('img');
   backgroundImage.className = 'background-image';
-  var imageIndex = Math.floor(Math.random() * 10) + 1;
+  var imageIndexChoices = [2, 3, 4, 5, 6, 7, 9];
+  var imageIndex = imageIndexChoices[Math.floor(Math.random() * imageIndexChoices.length)];
   backgroundImage.src = 'http://www.feud.online/media/bgnew' + imageIndex + '.png';
   document.body.appendChild(backgroundImage);
 
