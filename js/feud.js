@@ -2,8 +2,8 @@
 (function() {
   var backgroundImage = document.createElement('img');
   backgroundImage.className = 'background-image';
-  var images = ['http://www.feud.online/media/feudbg1.png', 'http://www.feud.online/media/feudbg2.png', 'http://www.feud.online/media/feudbg3.png', 'http://www.feud.online/media/feudbg4.png', 'http://www.feud.online/media/feudbg5.png'];
-  backgroundImage.src = images[Math.floor(Math.random() * images.length)];
+  var imageIndex = Math.floor(Math.random() * 10) + 1;
+  backgroundImage.src = 'http://www.feud.online/media/bgnew' + imageIndex + '.png';
   document.body.appendChild(backgroundImage);
 
   var isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
