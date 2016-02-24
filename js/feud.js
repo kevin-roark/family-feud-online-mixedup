@@ -18,17 +18,10 @@
 
   var startTime = 4000;
   setTimeout(function() {
-    loadingMessage.style.opacity = 1.0;
+    loadingMessage.style.opacity = 0;
 
-    var intervalTime = 30;
-    var fadeDelta = intervalTime / 800;
-    var fadeInterval = setInterval(function() {
-      loadingMessage.style.opacity -= fadeDelta;
-      if (loadingMessage.style.opacity <= 0) {
-        clearInterval(fadeInterval);
-        document.body.removeChild(loadingMessage);
-      }
-    }, intervalTime);
+    setTimeout(function() {
+      document.body.removeChild(loadingMessage);
+    }, 800);
   }, startTime - 1000);
-
 })();
