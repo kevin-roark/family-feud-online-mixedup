@@ -1,7 +1,7 @@
 
 var renderer = new frampton.WebRenderer({
   mediaConfig: mediaConfig,
-  timeToLoadVideo: 6000,
+  timeToLoadVideo: 7000,
   videoSourceMaker: function(filename) {
     switch (filename[0]) {
       case 'F':
@@ -52,8 +52,7 @@ function newLoopingSegment() {
   }
 
   // choose the duration of each clip in the segment
-  var segmentDuration = (Math.pow(Math.random(), 2.1) * (minimumDuration - 0.35)) + 0.35;
-  console.log(`segment duration: ${segmentDuration}`);
+  var segmentDuration = (Math.pow(Math.random(), 2.17) * (minimumDuration - 0.3)) + 0.3;
 
   // construct the ordered list of segments
   var segments = [];
@@ -67,7 +66,7 @@ function newLoopingSegment() {
   var sequencedSegment = new frampton.SequencedSegment({ segments: segments });
 
   // choose a number of times to loop sequence
-  var timesToLoopSegment = frampton.util.choice([1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 5, 6]);
+  var timesToLoopSegment = frampton.util.choice([1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 5, 5, 6, 7, 8]);
 
   return frampton.finiteLoopingSegment(sequencedSegment, timesToLoopSegment);
 }
